@@ -43,16 +43,11 @@ run: clean build
 clean:
 	@rm -rf $(BUILD_DIR)
 
-#.PHONY: watch
-#watch:
-#	reflex -r "\.txt$" echo {}
-#	#reflex -r '\.go$' -s -- sh -c "go run ./cmd/server/main.go"
-
 .PHONY: watch
-watch: go_prep_watch
+watch: go-prep-watch
 	#reflex -s -r '\.go$$' make run
 	reflex -r '\.go$$' -s -- sh -c "go run ./cmd/server/main.go"
 
-go_prep_watch:
+go-prep-watch:
 	@echo "\nPreparing environment...."
 	go get github.com/cespare/reflex
