@@ -51,3 +51,8 @@ watch: go-prep-watch
 go-prep-watch:
 	@echo "\nPreparing environment...."
 	go get github.com/cespare/reflex
+
+.PHONY: gen-swagger
+gen-swagger:
+	@echo "+ $@"
+	swagger generate spec -o ./api/swagger.json

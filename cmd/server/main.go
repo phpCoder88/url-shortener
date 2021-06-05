@@ -1,3 +1,23 @@
+// Package main URL shortener API.
+//
+// Open API for URL shortener service
+//
+// Terms Of Service:
+//
+//     Schemes: http
+//     Host: localhost:8000
+//     BasePath: /api
+//     Version: 1.0.0
+//     License: MIT https://opensource.org/licenses/MIT
+//     Contact: Pavel Bobylev<p_bobylev@bk.ru> https://github.com/phpCoder88
+//
+//     Consumes:
+//     - application/json
+//
+//     Produces:
+//     - application/json
+//
+// swagger:meta
 package main
 
 import (

@@ -14,15 +14,12 @@ import (
 func Routes() http.Handler {
 	standardMiddleware := alice.New(middlewares.RecoverPanic)
 
-	router := mux.NewRouter().PathPrefix("/api").Subrouter()
-
-	authRouter := router.PathPrefix("/auth").Subrouter()
-	authRouter.HandleFunc("/register", handlers.RegisterEndpoint).Methods("POST")
-	authRouter.HandleFunc("/login", handlers.LoginEndpoint).Methods("POST")
-	authRouter.HandleFunc("/refresh-token", handlers.RefreshTokenEndpoint).Methods("POST")
-
-	router.HandleFunc("/shorten", handlers.ShortenEndpoint).Methods("POST")
-	router.HandleFunc("/report", handlers.ReportEndpoint).Methods("GET")
+	router := mux.NewRouter()
+	api := router.PathPrefix("/api").Subrouter()
+	api.HandleFunc("/shorten", handlers.ShortenEndpoint).Methods("POST")
+	api.HandleFunc("/report", handlers.ReportEndpoint).Methods("GET")
+	router.PathPrefix("/swaggerui/").Handler(http.StripPrefix("/swaggerui/", http.FileServer(http.Dir("./cmd/swaggerui"))))
+	router.HandleFunc("/", handlers.RedirectFullURL).Methods("GET").Queries("t", "{token}")
 
 	methods := gHandlers.AllowedMethods([]string{
 		"GET",
