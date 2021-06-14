@@ -21,17 +21,15 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"log"
-	"net"
-	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
 
-	"github.com/phpCoder88/url-shortener/cmd/server/http/routes"
 	"github.com/phpCoder88/url-shortener/internal/config"
+	"github.com/phpCoder88/url-shortener/internal/ioc"
+	"github.com/phpCoder88/url-shortener/internal/server"
+	"github.com/phpCoder88/url-shortener/internal/version"
+	"github.com/phpCoder88/url-shortener/pkg/db/postgres"
+
+	"go.uber.org/zap"
 )
 
 func main() {
@@ -40,34 +38,29 @@ func main() {
 		log.Fatal(err)
 	}
 
-	api := &http.Server{
-		Addr:         net.JoinHostPort("", fmt.Sprint(conf.Port)),
-		Handler:      routes.Routes(),
-		IdleTimeout:  conf.IdleTimeout,
-		ReadTimeout:  conf.ReadTimeout,
-		WriteTimeout: conf.WriteTimeout,
+	logger, err := zap.NewProduction()
+	if err != nil {
+		log.Fatalf("can't initialize zap logger: %v", err)
 	}
 
-	go func() {
-		fmt.Printf("Server is listening %d port...\n", conf.Port)
-		err = api.ListenAndServe()
+	logger = logger.With(zap.String("Version", version.Version))
+	defer func() {
+		err = logger.Sync()
 		if err != nil {
-			log.Println(err)
+			log.Fatal(err)
 		}
 	}()
+	slogger := logger.Sugar()
 
-	// Graceful shutdown
-	osSignalChan := make(chan os.Signal, 1)
-	signal.Notify(osSignalChan, syscall.SIGINT, syscall.SIGTERM)
-	<-osSignalChan
-
-	ctx, cancel := context.WithTimeout(context.Background(), conf.ShutdownTimeout)
-	defer cancel()
-
-	log.Println("Shutting down...")
-	err = api.Shutdown(ctx)
+	db, err := postgres.NewPgConnection(conf.DB.Host, conf.DB.Port, conf.DB.Name, conf.DB.User, conf.DB.Password)
 	if err != nil {
-		log.Println(err)
-		return
+		slogger.Fatal("Can't connect to the database.", "err", err)
+	}
+
+	container := ioc.NewContainer(db)
+	apiServer := server.NewServer(slogger, conf, container)
+	err = apiServer.Run()
+	if err != nil {
+		slogger.Error("Occurred error during stopping the API server.", "err", err)
 	}
 }

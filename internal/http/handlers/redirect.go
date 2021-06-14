@@ -1,14 +1,13 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
-func RedirectFullURL(res http.ResponseWriter, req *http.Request) {
-	log.Printf("Requested token %s\n", mux.Vars(req)["token"])
+func (h *Handler) RedirectFullURL(res http.ResponseWriter, req *http.Request) {
+	h.logger.Infof("Requested token %s", mux.Vars(req)["token"])
 
 	// TODO: Проверка на существование URL для переданного токена
 

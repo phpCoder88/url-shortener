@@ -1,6 +1,9 @@
 package handlers
 
-import "net/http"
+import (
+	"encoding/json"
+	"net/http"
+)
 
 // swagger:operation GET /report URLReport
 //
@@ -24,6 +27,15 @@ import "net/http"
 //           visits:
 //             type: integer
 //             description: Visit counts of URL
-func ReportEndpoint(res http.ResponseWriter, req *http.Request) {
+func (h *Handler) ReportEndpoint(res http.ResponseWriter, req *http.Request) {
 	res.Header().Add("Content-Type", "application/json")
+	all, err := h.container.ShortenerService.FindAll()
+	if err != nil {
+		return
+	}
+
+	err = json.NewEncoder(res).Encode(all)
+	if err != nil {
+		return
+	}
 }

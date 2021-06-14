@@ -44,6 +44,6 @@ import "net/http"
 //           description: Short URL
 //   405:
 //     description: "Invalid input"
-func ShortenEndpoint(res http.ResponseWriter, req *http.Request) {
+func (h *Handler) ShortenEndpoint(res http.ResponseWriter, req *http.Request) {
 	res.Header().Add("Content-Type", "application/json")
 }
