@@ -23,7 +23,7 @@ type DBConfig struct {
 	Host     string `default:"localhost"`
 	Port     uint16 `default:"5432"`
 	Name     string `default:"shortener"`
-	User     string `default:"postgres"`
+	User     string `default:"shortener"`
 	Password string `default:"123456789"`
 }
 

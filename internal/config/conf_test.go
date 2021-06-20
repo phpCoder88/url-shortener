@@ -19,7 +19,7 @@ var expectedDBConf = DBConfig{
 	Host:     "localhost",
 	Port:     5432,
 	Name:     "shortener",
-	User:     "postgres",
+	User:     "shortener",
 	Password: "123456789",
 }
 
