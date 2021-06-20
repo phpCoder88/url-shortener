@@ -24,7 +24,7 @@ func Routes(logger *zap.SugaredLogger, conf *config.Config, container *ioc.Conta
 
 	api.HandleFunc("/shorten", handler.ShortenEndpoint).Methods("POST")
 	api.HandleFunc("/report", handler.ReportEndpoint).Methods("GET")
-	router.PathPrefix("/swaggerui/").Handler(http.StripPrefix("/swaggerui/", http.FileServer(http.Dir("./cmd/swaggerui"))))
+	router.PathPrefix("/swaggerui/").Handler(http.StripPrefix("/swaggerui/", http.FileServer(http.Dir("./web/static/swaggerui"))))
 	router.HandleFunc("/", handler.RedirectFullURL).Methods("GET").Queries("t", "{token}")
 
 	methods := gHandlers.AllowedMethods([]string{

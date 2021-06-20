@@ -56,3 +56,4 @@ go-prep-watch:
 gen-swagger:
 	@echo "+ $@"
 	swagger generate spec -o ./api/swagger.json
+	cp ./api/swagger.json ./web/static/swaggerui/
