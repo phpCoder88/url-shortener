@@ -32,6 +32,9 @@
         "produces": [
           "application/json"
         ],
+        "tags": [
+          "shortener"
+        ],
         "operationId": "URLReport",
         "responses": {
           "200": {
@@ -56,6 +59,23 @@
         }
       }
     },
+    "/service-info": {
+      "get": {
+        "description": "Returns build information",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "service"
+        ],
+        "operationId": "BuildInfo",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/BuiltInfo"
+          }
+        }
+      }
+    },
     "/shorten": {
       "post": {
         "description": "Creates a new short URL for given URL",
@@ -64,6 +84,9 @@
         ],
         "produces": [
           "application/json"
+        ],
+        "tags": [
+          "shortener"
         ],
         "operationId": "shortenURL",
         "parameters": [
@@ -112,6 +135,25 @@
           "405": {
             "description": "Invalid input"
           }
+        }
+      }
+    }
+  },
+  "responses": {
+    "BuiltInfo": {
+      "description": "BuiltInfo represents the build information for this application",
+      "headers": {
+        "BuildCommit": {
+          "type": "string",
+          "description": "The BuildCommit of running application"
+        },
+        "BuildDate": {
+          "type": "string",
+          "description": "The BuildDate running application"
+        },
+        "Version": {
+          "type": "string",
+          "description": "The Version of running application"
         }
       }
     }

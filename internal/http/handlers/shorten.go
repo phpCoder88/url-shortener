@@ -2,7 +2,7 @@ package handlers
 
 import "net/http"
 
-// swagger:operation POST /shorten shortenURL
+// swagger:operation POST /shorten shortener shortenURL
 //
 // Creates a new short URL for given URL
 //

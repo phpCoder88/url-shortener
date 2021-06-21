@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-// swagger:operation GET /report URLReport
+// swagger:operation GET /report shortener URLReport
 //
 // Returns report information
 //
