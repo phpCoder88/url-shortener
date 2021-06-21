@@ -3,7 +3,6 @@ package routes
 import (
 	"net/http"
 
-	"github.com/phpCoder88/url-shortener/internal/config"
 	"github.com/phpCoder88/url-shortener/internal/http/handlers"
 	"github.com/phpCoder88/url-shortener/internal/http/middlewares"
 	"github.com/phpCoder88/url-shortener/internal/ioc"
@@ -14,8 +13,8 @@ import (
 	"go.uber.org/zap"
 )
 
-func Routes(logger *zap.SugaredLogger, conf *config.Config, container *ioc.Container) http.Handler {
-	standardMiddleware := alice.New(middlewares.RecoverPanic)
+func Routes(logger *zap.SugaredLogger, container *ioc.Container) http.Handler {
+	standardMiddleware := alice.New(middlewares.RecoverPanic(logger))
 
 	router := mux.NewRouter()
 	api := router.PathPrefix("/api").Subrouter()

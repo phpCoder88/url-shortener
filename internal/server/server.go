@@ -29,7 +29,7 @@ func NewServer(logger *zap.SugaredLogger, conf *config.Config, container *ioc.Co
 	return &Server{
 		server: http.Server{
 			Addr:         net.JoinHostPort("", fmt.Sprint(conf.Server.Port)),
-			Handler:      routes.Routes(logger, conf, container),
+			Handler:      routes.Routes(logger, container),
 			IdleTimeout:  conf.Server.IdleTimeout,
 			ReadTimeout:  conf.Server.ReadTimeout,
 			WriteTimeout: conf.Server.WriteTimeout,
