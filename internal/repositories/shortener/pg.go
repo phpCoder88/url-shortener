@@ -2,6 +2,7 @@ package shortener
 
 import (
 	"github.com/jmoiron/sqlx"
+
 	"github.com/phpCoder88/url-shortener/internal/entities"
 )
 

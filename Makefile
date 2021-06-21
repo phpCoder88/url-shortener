@@ -16,7 +16,7 @@ GO_BUILD_ARGS = \
 build:
 	@echo "+ $@"
 	@mkdir -p $(BUILD_DIR)
-	go build -race $(GO_BUILD_ARGS) -o $(BUILD_DIR) ./cmd/server
+	go build $(GO_BUILD_ARGS) -o $(BUILD_DIR) ./cmd/server
 
 .PHONY: test
 test:

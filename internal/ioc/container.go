@@ -2,6 +2,7 @@ package ioc
 
 import (
 	"github.com/jmoiron/sqlx"
+
 	shortenerRepo "github.com/phpCoder88/url-shortener/internal/repositories/shortener"
 	"github.com/phpCoder88/url-shortener/internal/services/shortener"
 )

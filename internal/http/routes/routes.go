@@ -20,7 +20,7 @@ func Routes(logger *zap.SugaredLogger, conf *config.Config, container *ioc.Conta
 	router := mux.NewRouter()
 	api := router.PathPrefix("/api").Subrouter()
 
-	handler := handlers.NewHandler(logger, conf, container)
+	handler := handlers.NewHandler(logger, container)
 
 	api.HandleFunc("/shorten", handler.ShortenEndpoint).Methods("POST")
 	api.HandleFunc("/report", handler.ReportEndpoint).Methods("GET")

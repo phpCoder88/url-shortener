@@ -26,31 +26,37 @@ import (
 	"github.com/phpCoder88/url-shortener/internal/config"
 	"github.com/phpCoder88/url-shortener/internal/ioc"
 	"github.com/phpCoder88/url-shortener/internal/server"
+	"github.com/phpCoder88/url-shortener/internal/storages/postgres"
 	"github.com/phpCoder88/url-shortener/internal/version"
-	"github.com/phpCoder88/url-shortener/pkg/db/postgres"
 
 	"go.uber.org/zap"
 )
 
 func main() {
-	conf, err := config.GetConfig()
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	logger, err := zap.NewProduction()
 	if err != nil {
 		log.Fatalf("can't initialize zap logger: %v", err)
 	}
 
-	logger = logger.With(zap.String("Version", version.Version))
+	logger = logger.With(
+		zap.String("Version", version.Version),
+		zap.String("BuildDate", version.BuildDate),
+		zap.String("BuildCommit", version.BuildCommit),
+	)
+
 	defer func() {
 		err = logger.Sync()
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 	}()
 	slogger := logger.Sugar()
+
+	conf, err := config.GetConfig()
+	if err != nil {
+		slogger.Error(err)
+		return
+	}
 
 	db, err := postgres.NewPgConnection(conf.DB.Host, conf.DB.Port, conf.DB.Name, conf.DB.User, conf.DB.Password)
 	if err != nil {

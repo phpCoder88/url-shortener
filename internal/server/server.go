@@ -9,7 +9,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	routes2 "github.com/phpCoder88/url-shortener/internal/http/routes"
+	"github.com/phpCoder88/url-shortener/internal/http/routes"
 
 	"github.com/phpCoder88/url-shortener/internal/config"
 	"github.com/phpCoder88/url-shortener/internal/ioc"
@@ -29,7 +29,7 @@ func NewServer(logger *zap.SugaredLogger, conf *config.Config, container *ioc.Co
 	return &Server{
 		server: http.Server{
 			Addr:         net.JoinHostPort("", fmt.Sprint(conf.Server.Port)),
-			Handler:      routes2.Routes(logger, conf, container),
+			Handler:      routes.Routes(logger, conf, container),
 			IdleTimeout:  conf.Server.IdleTimeout,
 			ReadTimeout:  conf.Server.ReadTimeout,
 			WriteTimeout: conf.Server.WriteTimeout,
