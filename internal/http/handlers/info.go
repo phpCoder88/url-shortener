@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/phpCoder88/url-shortener/internal/entities"
+	"github.com/phpCoder88/url-shortener/internal/responses"
 	"github.com/phpCoder88/url-shortener/internal/version"
 )
 
@@ -20,7 +20,7 @@ import (
 func (h *Handler) BuiltInfoEndpoint(res http.ResponseWriter, req *http.Request) {
 	res.Header().Add("Content-Type", "application/json")
 
-	buildInfo := entities.BuiltInfo{
+	buildInfo := responses.BuiltInfo{
 		Version:     version.Version,
 		BuildDate:   version.BuildDate,
 		BuildCommit: version.BuildCommit,

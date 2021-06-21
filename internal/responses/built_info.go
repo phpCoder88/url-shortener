@@ -1,4 +1,4 @@
-package entities
+package responses
 
 // BuiltInfo represents the build information for this application
 //
