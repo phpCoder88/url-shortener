@@ -52,6 +52,8 @@ func main() {
 	}()
 	slogger := logger.Sugar()
 
+	slogger.Info("Starting the application...")
+	slogger.Info("Reading configuration and initializing resources...")
 	conf, err := config.GetConfig()
 	if err != nil {
 		slogger.Error(err)
@@ -63,10 +65,13 @@ func main() {
 		slogger.Fatal("Can't connect to the database.", "err", err)
 	}
 
+	slogger.Info("Configuring the application units...")
 	container := ioc.NewContainer(db)
 	apiServer := server.NewServer(slogger, conf, container)
 	err = apiServer.Run()
 	if err != nil {
 		slogger.Error("Occurred error during stopping the API server.", "err", err)
 	}
+
+	slogger.Info("The app is calling the last defers and will be stopped.")
 }

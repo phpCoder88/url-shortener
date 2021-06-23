@@ -9,9 +9,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/phpCoder88/url-shortener/internal/http/routes"
-
 	"github.com/phpCoder88/url-shortener/internal/config"
+	"github.com/phpCoder88/url-shortener/internal/http/routes"
 	"github.com/phpCoder88/url-shortener/internal/ioc"
 
 	"go.uber.org/zap"
@@ -23,6 +22,7 @@ type Server struct {
 	logger    *zap.SugaredLogger
 	conf      *config.Config
 	container *ioc.Container
+	errors    chan error
 }
 
 func NewServer(logger *zap.SugaredLogger, conf *config.Config, container *ioc.Container) *Server {
@@ -37,6 +37,7 @@ func NewServer(logger *zap.SugaredLogger, conf *config.Config, container *ioc.Co
 		logger:    logger,
 		conf:      conf,
 		container: container,
+		errors:    make(chan error, 1),
 	}
 }
 
@@ -45,18 +46,24 @@ func (s *Server) Run() error {
 		s.logger.Infof("Server is listening on PORT: %d...", s.conf.Server.Port)
 		err := s.server.ListenAndServe()
 		if err != nil {
-			s.logger.Error(err)
+			s.errors <- err
 		}
 	}()
 
 	// Graceful shutdown
 	osSignalChan := make(chan os.Signal, 1)
 	signal.Notify(osSignalChan, syscall.SIGINT, syscall.SIGTERM)
-	<-osSignalChan
 
+	select {
+	case x := <-osSignalChan:
+		s.logger.Infow("Received a signal.", "signal", x.String())
+	case err := <-s.errors:
+		s.logger.Errorw("Received an error from the business logic server.", "err", err)
+	}
+
+	s.logger.Info("Starting to shutdown the server...")
 	ctx, cancel := context.WithTimeout(context.Background(), s.conf.Server.ShutdownTimeout)
 	defer cancel()
 
-	s.logger.Info("Starting to shutdown the server...")
 	return s.server.Shutdown(ctx)
 }
