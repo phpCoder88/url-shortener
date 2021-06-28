@@ -12,6 +12,7 @@ services:
       DB_USER: shortener
       DB_NAME: shortener
       DB_PASSWORD: 123456789
+      DB_SSL_MODE: disable
     depends_on:
       db:
         condition: service_healthy

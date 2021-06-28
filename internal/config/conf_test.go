@@ -21,6 +21,7 @@ var expectedDBConf = DBConfig{
 	Name:     "shortener",
 	User:     "shortener",
 	Password: "123456789",
+	SSLMode:  "verify-full",
 }
 
 func TestParseServerConfig(t *testing.T) {

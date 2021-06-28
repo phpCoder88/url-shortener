@@ -1,5 +1,6 @@
 module github.com/phpCoder88/url-shortener
 
+// +heroku goVersion go1.16
 go 1.16
 
 require (
