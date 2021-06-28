@@ -1,6 +1,7 @@
 package config
 
 import (
+	"os"
 	"testing"
 	"time"
 
@@ -44,4 +45,53 @@ func TestGetConfig(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, expectedServerConf, *conf.Server)
 	assert.Equal(t, expectedDBConf, *conf.DB)
+}
+
+func TestGetConfigWithPort(t *testing.T) {
+	err := os.Setenv("PORT", "8080")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() {
+		err = os.Unsetenv("PORT")
+		if err != nil {
+			t.Fatal(err)
+		}
+	}()
+
+	conf, err := GetConfig()
+
+	expectedServerConf.Port = 8080
+	defer func() {
+		expectedServerConf.Port = 8000
+	}()
+
+	assert.NoError(t, err)
+	assert.Equal(t, expectedServerConf, *conf.Server)
+	assert.Equal(t, expectedDBConf, *conf.DB)
+}
+
+func TestGetConfigWithWrongPort(t *testing.T) {
+	err := os.Setenv("PORT", "nine thousand")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() {
+		err = os.Unsetenv("PORT")
+		if err != nil {
+			t.Fatal(err)
+		}
+	}()
+
+	conf, err := GetConfig()
+
+	expectedServerConf.Port = 8080
+	defer func() {
+		expectedServerConf.Port = 8000
+	}()
+
+	assert.Error(t, err)
+	assert.Nil(t, conf)
 }
