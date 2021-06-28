@@ -3,7 +3,7 @@ BUILD_DIR = build
 REPO = $(shell go list -m)
 BUILD_DATE = $(shell date +%FT%T%Z)
 BUILD_COMMIT = $(shell git rev-parse HEAD)
-VERSION = $(if $(TAG),$(TAG),$(if $(BRANCH_NAME),$(BRANCH_NAME),$(shell git describe --tags --exact-match || git symbolic-ref -q --short HEAD)))
+VERSION = $(if $(TAG),$(TAG),$(if $(BRANCH_NAME),$(BRANCH_NAME),$(shell git describe --tags --exact-match 2> /dev/null || git symbolic-ref -q --short HEAD)))
 
 GO_BUILD_ARGS = \
   -ldflags " \
@@ -16,7 +16,7 @@ GO_BUILD_ARGS = \
 build:
 	@echo "+ $@"
 	@mkdir -p $(BUILD_DIR)
-	go build $(GO_BUILD_ARGS) -o $(BUILD_DIR) ./cmd/server
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build $(GO_BUILD_ARGS) -o "./$(BUILD_DIR)/shortener" ./cmd/server
 
 .PHONY: test
 test:

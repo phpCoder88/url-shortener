@@ -14,8 +14,7 @@ RUN mkdir -p /shortener
 ADD . /shortener
 WORKDIR /shortener
 
-RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 \
-    go build -o ./build/shortener ./cmd/server
+RUN make build
 
 # Final stage: Run the binary
 FROM scratch
