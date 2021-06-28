@@ -3,7 +3,7 @@ BUILD_DIR = build
 REPO = $(shell go list -m)
 BUILD_DATE = $(shell date +%FT%T%Z)
 BUILD_COMMIT = $(shell git rev-parse HEAD)
-VERSION = $(if $(TAG),$(TAG),$(if $(BRANCH_NAME),$(BRANCH_NAME),$(shell git describe --tags --exact-match || git symbolic-ref -q --short HEAD)))
+VERSION = $(if $(TAG),$(TAG),$(if $(BRANCH_NAME),$(BRANCH_NAME),$(shell git describe --tags --exact-match 2> /dev/null || git symbolic-ref -q --short HEAD)))
 
 GO_BUILD_ARGS = \
   -ldflags " \
@@ -16,7 +16,7 @@ GO_BUILD_ARGS = \
 build:
 	@echo "+ $@"
 	@mkdir -p $(BUILD_DIR)
-	go build -race $(GO_BUILD_ARGS) -o $(BUILD_DIR) ./cmd/server
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build $(GO_BUILD_ARGS) -o "./$(BUILD_DIR)/shortener" ./cmd/server
 
 .PHONY: test
 test:
@@ -43,16 +43,17 @@ run: clean build
 clean:
 	@rm -rf $(BUILD_DIR)
 
-#.PHONY: watch
-#watch:
-#	reflex -r "\.txt$" echo {}
-#	#reflex -r '\.go$' -s -- sh -c "go run ./cmd/server/main.go"
-
 .PHONY: watch
-watch: go_prep_watch
+watch: go-prep-watch
 	#reflex -s -r '\.go$$' make run
 	reflex -r '\.go$$' -s -- sh -c "go run ./cmd/server/main.go"
 
-go_prep_watch:
+go-prep-watch:
 	@echo "\nPreparing environment...."
 	go get github.com/cespare/reflex
+
+.PHONY: gen-swagger
+gen-swagger:
+	@echo "+ $@"
+	swagger generate spec -o ./api/swagger.json
+	cp ./api/swagger.json ./web/static/swaggerui/
