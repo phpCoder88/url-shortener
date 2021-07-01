@@ -22,12 +22,13 @@ type ServerConfig struct {
 }
 
 type DBConfig struct {
-	Host     string `default:"localhost"`
-	Port     uint16 `default:"5432"`
-	Name     string `default:"shortener"`
-	User     string `default:"shortener"`
-	Password string `default:"123456789"`
-	SSLMode  string `envconfig:"ssl_mode" default:"verify-full"`
+	Host         string        `default:"localhost"`
+	Port         uint16        `default:"5432"`
+	Name         string        `default:"shortener"`
+	User         string        `default:"shortener"`
+	Password     string        `default:"123456789"`
+	SSLMode      string        `envconfig:"ssl_mode" default:"verify-full"`
+	QueryTimeout time.Duration `default:"500ms"`
 }
 
 func GetConfig() (*Config, error) {

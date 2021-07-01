@@ -1,6 +1,12 @@
 package handlers
 
-import "net/http"
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+
+	"gopkg.in/go-playground/validator.v9"
+)
 
 // swagger:operation POST /shorten shortener shortenURL
 //
@@ -42,8 +48,48 @@ import "net/http"
 //         shortURL:
 //           type: string
 //           description: Short URL
-//   405:
-//     description: "Invalid input"
+//   400:
+//     description: Invalid input
+//   500:
+//     description: Internal error
 func (h *Handler) ShortenEndpoint(res http.ResponseWriter, req *http.Request) {
 	res.Header().Add("Content-Type", "application/json")
+
+	var input struct {
+		FullURL string `validate:"required,url"`
+	}
+
+	err := json.NewDecoder(req.Body).Decode(&input)
+	if err != nil {
+		h.logger.Error(err)
+	}
+
+	validate := validator.New()
+	err = validate.Struct(input)
+	if err != nil {
+		res.WriteHeader(http.StatusBadRequest)
+		h.logger.Error(err)
+		return
+	}
+
+	h.logger.Info(input)
+	urlModel, exist, err := h.container.ShortenerService.CreateShortURL(input.FullURL)
+	if err != nil {
+		res.WriteHeader(http.StatusInternalServerError)
+		h.logger.Error(err)
+		return
+	}
+
+	if exist {
+		res.WriteHeader(http.StatusOK)
+	} else {
+		res.WriteHeader(http.StatusCreated)
+	}
+
+	shortURL := fmt.Sprintf("http://%s?t=%s", req.Host, urlModel.Token)
+	h.logger.Info(shortURL)
+	_, err = res.Write([]byte(`{"shortURL": "` + shortURL + `"}`))
+	if err != nil {
+		h.logger.Error(err)
+	}
 }

@@ -132,8 +132,11 @@
               }
             }
           },
-          "405": {
+          "400": {
             "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }

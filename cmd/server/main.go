@@ -66,7 +66,7 @@ func main() {
 	}
 
 	slogger.Info("Configuring the application units...")
-	container := ioc.NewContainer(db)
+	container := ioc.NewContainer(db, conf.DB.QueryTimeout)
 	apiServer := server.NewServer(slogger, conf, container)
 	err = apiServer.Run()
 	if err != nil {

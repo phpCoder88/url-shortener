@@ -17,12 +17,13 @@ var expectedServerConf = ServerConfig{
 }
 
 var expectedDBConf = DBConfig{
-	Host:     "localhost",
-	Port:     5432,
-	Name:     "shortener",
-	User:     "shortener",
-	Password: "123456789",
-	SSLMode:  "verify-full",
+	Host:         "localhost",
+	Port:         5432,
+	Name:         "shortener",
+	User:         "shortener",
+	Password:     "123456789",
+	SSLMode:      "verify-full",
+	QueryTimeout: 500 * time.Millisecond,
 }
 
 func TestParseServerConfig(t *testing.T) {
