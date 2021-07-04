@@ -54,3 +54,16 @@ func (r *PgRepository) FindByURL(url string) (*entities.ShortURL, error) {
 
 	return urlRecord, nil
 }
+
+func (r *PgRepository) FindByToken(token string) (*entities.ShortURL, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), r.timeout)
+	defer cancel()
+
+	urlRecord := new(entities.ShortURL)
+	err := r.db.GetContext(ctx, urlRecord, "SELECT * FROM short_urls WHERE token = $1", token)
+	if err != nil {
+		return nil, err
+	}
+
+	return urlRecord, nil
+}

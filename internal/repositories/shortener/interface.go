@@ -7,4 +7,5 @@ type ShortURLRepository interface {
 	FindByURL(string) (*entities.ShortURL, error)
 	FindByID(int64) (*entities.ShortURL, error)
 	Add(*entities.ShortURL) error
+	FindByToken(string) (*entities.ShortURL, error)
 }

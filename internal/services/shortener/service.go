@@ -79,3 +79,12 @@ func (s *Service) shortURL(url string) (string, error) {
 
 	return token, nil
 }
+
+func (s *Service) GetFullURL(token string) (string, error) {
+	url, err := s.repo.FindByToken(token)
+	if err != nil {
+		return "", err
+	}
+
+	return url.LongURL, nil
+}
