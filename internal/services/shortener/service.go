@@ -92,6 +92,20 @@ func (s *Service) GetFullURL(token string) (string, error) {
 	return urlRecord.LongURL, nil
 }
 
+func (s *Service) VisitFullURL(token string) (string, error) {
+	urlRecord, err := s.repo.FindByToken(token)
+	if err != nil {
+		return "", err
+	}
+
+	err = s.repo.IncURLVisits(urlRecord.ID)
+	if err != nil {
+		return "", err
+	}
+
+	return urlRecord.LongURL, nil
+}
+
 func (s *Service) ParseLimitOffsetQueryParams(query url.Values, param string, defaultVal int64) (int64, error) {
 	var paramInt int64
 	var err error

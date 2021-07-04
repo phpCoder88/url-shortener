@@ -73,3 +73,16 @@ func (r *PgRepository) FindByToken(token string) (*entities.ShortURL, error) {
 
 	return urlRecord, nil
 }
+
+func (r *PgRepository) IncURLVisits(id int64) error {
+	ctx, cancel := context.WithTimeout(context.Background(), r.timeout)
+	defer cancel()
+
+	sql := "UPDATE short_urls SET visits = visits + 1 WHERE id = $1"
+	_, err := r.db.ExecContext(ctx, sql, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
