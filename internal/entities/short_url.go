@@ -1,8 +1,18 @@
 package entities
 
+// ShortURL represents the short URL for this application
+//
+// swagger:model ShortURL
 type ShortURL struct {
-	ID      int64  `json:"id"`
+	// min: 1
+	ID int64 `json:"id"`
+
+	// unique: true
 	LongURL string `json:"long_url" db:"long_url"`
-	Token   string `json:"token"`
-	Visits  int64  `json:"visits"`
+
+	// unique: true
+	Token string `json:"token"`
+
+	// min: 0
+	Visits int64 `json:"visits"`
 }

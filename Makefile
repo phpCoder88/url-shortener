@@ -55,5 +55,5 @@ go-prep-watch:
 .PHONY: gen-swagger
 gen-swagger:
 	@echo "+ $@"
-	swagger generate spec -o ./api/swagger.json
+	swagger generate spec -m -o ./api/swagger.json
 	cp ./api/swagger.json ./web/static/swaggerui/

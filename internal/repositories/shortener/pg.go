@@ -21,12 +21,18 @@ func NewPgRepository(db *sqlx.DB, timeout time.Duration) *PgRepository {
 	}
 }
 
-func (r *PgRepository) FindAll() ([]entities.ShortURL, error) {
-	return nil, nil
-}
+func (r *PgRepository) FindAll(limit, offset int64) ([]entities.ShortURL, error) {
+	var rows []entities.ShortURL
+	ctx, cancel := context.WithTimeout(context.Background(), r.timeout)
+	defer cancel()
 
-func (r *PgRepository) FindByID(id int64) (*entities.ShortURL, error) {
-	return nil, nil
+	sql := "SELECT * FROM short_urls LIMIT $1 OFFSET $2"
+	err := r.db.SelectContext(ctx, &rows, sql, limit, offset)
+	if err != nil {
+		return nil, err
+	}
+
+	return rows, nil
 }
 
 func (r *PgRepository) Add(model *entities.ShortURL) error {
