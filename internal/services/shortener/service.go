@@ -1,7 +1,6 @@
 package shortener
 
 import (
-	"database/sql"
 	"errors"
 	"net/url"
 	"strconv"
@@ -58,14 +57,10 @@ func (s *Service) CreateShortURL(urlStr string) (*entities.ShortURL, bool, error
 func (s *Service) IsURLExists(urlStr string) (*entities.ShortURL, bool, error) {
 	urlRecord, err := s.repo.FindByURL(urlStr)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, false, nil
-		}
-
 		return nil, false, err
 	}
 
-	return urlRecord, true, nil
+	return urlRecord, urlRecord != nil, nil
 }
 
 func (s *Service) shortURL(urlStr string) (string, error) {
