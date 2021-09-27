@@ -36,25 +36,39 @@
           "shortener"
         ],
         "operationId": "URLReport",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "default": 100,
+            "description": "Max number of records to return",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "default": 0,
+            "description": "Offset needed to return a specific subset of records",
+            "name": "offset",
+            "in": "query"
+          }
+        ],
         "responses": {
           "200": {
             "description": "returns report information",
             "schema": {
               "type": "array",
               "items": {
-                "type": "object",
-                "properties": {
-                  "fullURL": {
-                    "description": "Full URL",
-                    "type": "string"
-                  },
-                  "visits": {
-                    "description": "Visit counts of URL",
-                    "type": "integer"
-                  }
-                }
+                "$ref": "#/definitions/ShortURL"
               }
             }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
@@ -132,11 +146,45 @@
               }
             }
           },
-          "405": {
+          "400": {
             "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
+    }
+  },
+  "definitions": {
+    "ShortURL": {
+      "description": "ShortURL represents the short URL for this application",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 1,
+          "x-go-name": "ID"
+        },
+        "long_url": {
+          "type": "string",
+          "uniqueItems": true,
+          "x-go-name": "LongURL"
+        },
+        "token": {
+          "type": "string",
+          "uniqueItems": true,
+          "x-go-name": "Token"
+        },
+        "visits": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "x-go-name": "Visits"
+        }
+      },
+      "x-go-package": "github.com/phpCoder88/url-shortener/internal/entities"
     }
   },
   "responses": {

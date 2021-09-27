@@ -1,0 +1,12 @@
+{
+  "name": "URL Shortener",
+  "description": "App for making short URLs",
+  "keywords": [
+    "go",
+    "Short URLs"
+  ],
+  "image": "heroku/go:1.16",
+  "mount_dir": "src/github.com/phpCoder88/url-shortener",
+  "website": "https://github.com/phpCoder88/url-shortener",
+  "repository": "https://github.com/phpCoder88/url-shortener"
+}

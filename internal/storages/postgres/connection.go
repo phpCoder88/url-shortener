@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/phpCoder88/url-shortener/internal/config"
+
 	_ "github.com/jackc/pgx/stdlib" // pgx driver
 	"github.com/jmoiron/sqlx"
 )
@@ -15,13 +17,14 @@ const (
 	connMaxIdleTime    = 20
 )
 
-func NewPgConnection(host string, port uint16, dbName, user, password string) (*sqlx.DB, error) {
-	dsn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable password=%s",
-		host,
-		port,
-		user,
-		dbName,
-		password,
+func NewPgConnection(dbConf *config.DBConfig) (*sqlx.DB, error) {
+	dsn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s sslmode=%s",
+		dbConf.Host,
+		dbConf.Port,
+		dbConf.User,
+		dbConf.Name,
+		dbConf.Password,
+		dbConf.SSLMode,
 	)
 
 	db, err := sqlx.Connect("pgx", dsn)

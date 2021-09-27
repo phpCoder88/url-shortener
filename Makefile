@@ -1,4 +1,4 @@
-APP = server
+APP = shortener
 BUILD_DIR = build
 REPO = $(shell go list -m)
 BUILD_DATE = $(shell date +%FT%T%Z)
@@ -16,7 +16,7 @@ GO_BUILD_ARGS = \
 build:
 	@echo "+ $@"
 	@mkdir -p $(BUILD_DIR)
-	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build $(GO_BUILD_ARGS) -o "./$(BUILD_DIR)/shortener" ./cmd/server
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build $(GO_BUILD_ARGS) -o "./$(BUILD_DIR)/$(APP)" ./cmd/server
 
 .PHONY: test
 test:
@@ -55,5 +55,5 @@ go-prep-watch:
 .PHONY: gen-swagger
 gen-swagger:
 	@echo "+ $@"
-	swagger generate spec -o ./api/swagger.json
+	swagger generate spec -m -o ./api/swagger.json
 	cp ./api/swagger.json ./web/static/swaggerui/

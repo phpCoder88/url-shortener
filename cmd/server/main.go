@@ -60,13 +60,13 @@ func main() {
 		return
 	}
 
-	db, err := postgres.NewPgConnection(conf.DB.Host, conf.DB.Port, conf.DB.Name, conf.DB.User, conf.DB.Password)
+	db, err := postgres.NewPgConnection(conf.DB)
 	if err != nil {
 		slogger.Fatal("Can't connect to the database.", "err", err)
 	}
 
 	slogger.Info("Configuring the application units...")
-	container := ioc.NewContainer(db)
+	container := ioc.NewContainer(db, conf.DB.QueryTimeout)
 	apiServer := server.NewServer(slogger, conf, container)
 	err = apiServer.Run()
 	if err != nil {
