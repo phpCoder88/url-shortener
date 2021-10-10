@@ -1,23 +1,23 @@
 version: '3.8'
 
 services:
-  shortener:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-    - 8000:8000
-    environment:
-      DB_HOST: db
-      DB_USER: shortener
-      DB_NAME: shortener
-      DB_PASSWORD: 123456789
-      DB_SSL_MODE: disable
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      - shortener
+#  shortener:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#    - "8000:8000"
+#    environment:
+#      DB_HOST: db
+#      DB_USER: shortener
+#      DB_NAME: shortener
+#      DB_PASSWORD: 123456789
+#      DB_SSL_MODE: disable
+#    depends_on:
+#      db:
+#        condition: service_healthy
+#    networks:
+#      - shortener
 
   db:
     restart: always
@@ -26,8 +26,11 @@ services:
       POSTGRES_DB: shortener
       POSTGRES_USER: shortener
       POSTGRES_PASSWORD: 123456789
+      PGDATA: /var/lib/postgresql/data/pgdata
     ports:
-      - 5432:5432
+      - "5432:5432"
+    volumes:
+      - ./.docker/postgresql/data/:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s

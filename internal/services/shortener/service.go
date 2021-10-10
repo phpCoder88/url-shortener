@@ -8,6 +8,7 @@ import (
 
 	"github.com/speps/go-hashids/v2"
 
+	"github.com/phpCoder88/url-shortener/internal/dto"
 	"github.com/phpCoder88/url-shortener/internal/entities"
 	"github.com/phpCoder88/url-shortener/internal/repositories/shortener"
 )
@@ -22,7 +23,7 @@ func NewService(repo shortener.ShortURLRepository) *Service {
 	}
 }
 
-func (s *Service) FindAll(limit, offset int64) ([]entities.ShortURL, error) {
+func (s *Service) FindAll(limit, offset int64) ([]dto.ShortURLReportDto, error) {
 	return s.repo.FindAll(limit, offset)
 }
 
@@ -42,8 +43,10 @@ func (s *Service) CreateShortURL(urlStr string) (*entities.ShortURL, bool, error
 	}
 
 	urlRecord = &entities.ShortURL{
-		LongURL: urlStr,
-		Token:   token,
+		LongURL:   urlStr,
+		Token:     token,
+		Enabled:   true,
+		CreatedAt: time.Now(),
 	}
 
 	err = s.repo.Add(urlRecord)
@@ -87,13 +90,13 @@ func (s *Service) GetFullURL(token string) (string, error) {
 	return urlRecord.LongURL, nil
 }
 
-func (s *Service) VisitFullURL(token string) (string, error) {
+func (s *Service) VisitFullURL(token, userIP string) (string, error) {
 	urlRecord, err := s.repo.FindByToken(token)
 	if err != nil {
 		return "", err
 	}
 
-	err = s.repo.IncURLVisits(urlRecord.ID)
+	err = s.repo.AddURLVisit(urlRecord.ID, userIP)
 	if err != nil {
 		return "", err
 	}
