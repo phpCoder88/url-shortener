@@ -1,11 +1,11 @@
-package entities
+package dto
 
 import "time"
 
-// ShortURL represents the short URL for this application
+// ShortURLReportDto represents the short URL for this application with visiting statistics
 //
-// swagger:model ShortURL
-type ShortURL struct {
+// swagger:model ShortURLReportDto
+type ShortURLReportDto struct {
 	// min: 1
 	ID int64 `json:"id"`
 
@@ -18,4 +18,6 @@ type ShortURL struct {
 	Enabled bool `json:"enabled"`
 
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
+
+	Visits int64 `json:"visits"`
 }

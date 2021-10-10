@@ -36,7 +36,7 @@ import (
 //     schema:
 //       type: array
 //       items:
-//         "$ref": "#/definitions/ShortURL"
+//         "$ref": "#/definitions/ShortURLReportDto"
 //   400:
 //     description: Invalid input
 //   500:

@@ -3,5 +3,7 @@ error.log
 access.log
 profile.out
 
+.docker
+
 # Build artifacts
 /build
