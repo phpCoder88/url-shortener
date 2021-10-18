@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   shortener:
+    container_name: shortener
     build:
       context: .
       dockerfile: Dockerfile
@@ -32,7 +33,7 @@ services:
     volumes:
       - ./.docker/postgresql/data/:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U shortener"]
       interval: 5s
       timeout: 2s
       retries: 5
@@ -55,7 +56,7 @@ services:
     image: adminer
     restart: always
     ports:
-      - 8001:8080
+      - "8001:8080"
     depends_on:
       - db
     networks:

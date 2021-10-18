@@ -1,4 +1,4 @@
-package shortener
+package interfaces
 
 import (
 	"github.com/phpCoder88/url-shortener/internal/dto"
@@ -10,5 +10,4 @@ type ShortURLRepository interface {
 	FindByURL(string) (*entities.ShortURL, error)
 	Add(*entities.ShortURL) error
 	FindByToken(string) (*entities.ShortURL, error)
-	AddURLVisit(int64, string) error
 }

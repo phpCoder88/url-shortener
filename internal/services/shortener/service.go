@@ -6,25 +6,28 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/phpCoder88/url-shortener/internal/repositories/interfaces"
+
 	"github.com/speps/go-hashids/v2"
 
 	"github.com/phpCoder88/url-shortener/internal/dto"
 	"github.com/phpCoder88/url-shortener/internal/entities"
-	"github.com/phpCoder88/url-shortener/internal/repositories/shortener"
 )
 
 type Service struct {
-	repo shortener.ShortURLRepository
+	shortURLRepo interfaces.ShortURLRepository
+	urlVisitRepo interfaces.URLVisitRepository
 }
 
-func NewService(repo shortener.ShortURLRepository) *Service {
+func NewService(shortURLRepo interfaces.ShortURLRepository, urlVisitRepo interfaces.URLVisitRepository) *Service {
 	return &Service{
-		repo: repo,
+		shortURLRepo: shortURLRepo,
+		urlVisitRepo: urlVisitRepo,
 	}
 }
 
 func (s *Service) FindAll(limit, offset int64) ([]dto.ShortURLReportDto, error) {
-	return s.repo.FindAll(limit, offset)
+	return s.shortURLRepo.FindAll(limit, offset)
 }
 
 func (s *Service) CreateShortURL(urlStr string) (*entities.ShortURL, bool, error) {
@@ -49,7 +52,7 @@ func (s *Service) CreateShortURL(urlStr string) (*entities.ShortURL, bool, error
 		CreatedAt: time.Now(),
 	}
 
-	err = s.repo.Add(urlRecord)
+	err = s.shortURLRepo.Add(urlRecord)
 	if err != nil {
 		return nil, false, err
 	}
@@ -58,7 +61,7 @@ func (s *Service) CreateShortURL(urlStr string) (*entities.ShortURL, bool, error
 }
 
 func (s *Service) IsURLExists(urlStr string) (*entities.ShortURL, bool, error) {
-	urlRecord, err := s.repo.FindByURL(urlStr)
+	urlRecord, err := s.shortURLRepo.FindByURL(urlStr)
 	if err != nil {
 		return nil, false, err
 	}
@@ -82,7 +85,7 @@ func (s *Service) shortURL(urlStr string) (string, error) {
 }
 
 func (s *Service) GetFullURL(token string) (string, error) {
-	urlRecord, err := s.repo.FindByToken(token)
+	urlRecord, err := s.shortURLRepo.FindByToken(token)
 	if err != nil {
 		return "", err
 	}
@@ -91,12 +94,12 @@ func (s *Service) GetFullURL(token string) (string, error) {
 }
 
 func (s *Service) VisitFullURL(token, userIP string) (string, error) {
-	urlRecord, err := s.repo.FindByToken(token)
+	urlRecord, err := s.shortURLRepo.FindByToken(token)
 	if err != nil {
 		return "", err
 	}
 
-	err = s.repo.AddURLVisit(urlRecord.ID, userIP)
+	err = s.urlVisitRepo.AddURLVisit(urlRecord.ID, userIP)
 	if err != nil {
 		return "", err
 	}

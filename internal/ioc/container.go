@@ -3,9 +3,10 @@ package ioc
 import (
 	"time"
 
+	"github.com/phpCoder88/url-shortener/internal/repositories/postgres"
+
 	"github.com/jmoiron/sqlx"
 
-	shortenerRepo "github.com/phpCoder88/url-shortener/internal/repositories/shortener"
 	"github.com/phpCoder88/url-shortener/internal/services/shortener"
 )
 
@@ -14,7 +15,10 @@ type Container struct {
 }
 
 func NewContainer(db *sqlx.DB, queryTimeout time.Duration) *Container {
+	shortURLRepo := postgres.NewPgShortURLRepository(db, queryTimeout)
+	urlVisitRepo := postgres.NewPgURLVisitRepository(db, queryTimeout)
+
 	return &Container{
-		ShortenerService: shortener.NewService(shortenerRepo.NewPgRepository(db, queryTimeout)),
+		ShortenerService: shortener.NewService(shortURLRepo, urlVisitRepo),
 	}
 }
