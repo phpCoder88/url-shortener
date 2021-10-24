@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+#  shortener:
+#    container_name: shortener
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#    - "8000:8000"
+#    environment:
+#      DB_HOST: dbtest
+#      DB_USER: shortener
+#      DB_NAME: shortener
+#      DB_PASSWORD: 123456789
+#      DB_SSL_MODE: disable
+#    depends_on:
+#      db:
+#        condition: service_healthy
+#    networks:
+#      - shortener_test
+
+  dbtest:
+    restart: always
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: shortener
+      POSTGRES_USER: shortener
+      POSTGRES_PASSWORD: 123456789
+    ports:
+      - "54321:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shortener -p 5432"]
+      interval: 5s
+      timeout: 2s
+      retries: 5
+      start_period: 5s
+    networks:
+      - shortener_test
+
+#  migrations:
+#    image: migrate/migrate
+#    volumes:
+#    - ./migrations:/migrations
+#    depends_on:
+#      dbtest:
+#        condition: service_healthy
+#    command: ["-path", "/migrations", "-database",  "postgres://shortener:123456789@dbtest:5432/shortener?sslmode=disable", "up"]
+#    networks:
+#      - shortener_test
+
+networks:
+  shortener_test:
+    driver: bridge

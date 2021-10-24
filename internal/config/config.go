@@ -55,6 +55,10 @@ func GetConfig() (*Config, error) {
 	return &Config{Server: serverConf, DB: dbConf}, nil
 }
 
+func GetDBConfig() (*DBConfig, error) {
+	return parseDBConfig()
+}
+
 func parseServerConfig() (*ServerConfig, error) {
 	var conf ServerConfig
 

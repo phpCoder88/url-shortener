@@ -43,3 +43,14 @@ func NewPgConnection(dbConf *config.DBConfig) (*sqlx.DB, error) {
 
 	return db, nil
 }
+
+func GetConnectionString(dbConf *config.DBConfig) string {
+	return fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s",
+		dbConf.User,
+		dbConf.Password,
+		dbConf.Host,
+		dbConf.Port,
+		dbConf.Name,
+		dbConf.SSLMode,
+	)
+}
